@@ -1,33 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
+import { debounce } from '../utils/debounce'
+
 import './browser.css';
 
 const Browser = (() => {
-    const [pokemon, setPokemon] = React.useState('');
-    const [pokemonData, setPokemonData] = React.useState([]);
+    const [pokemonData, setPokemonData] = useState([]);
 
-    const useDebounce = (value, delay) => {
-        const [debouncedValue, setDebouncedValue] = React.useState(value);
-
-        useEffect(() => {
-          const handler = setTimeout(() => {
-            setDebouncedValue(value);
-          }, delay);
-
-          return () => {
-            clearTimeout(handler);
-          };
-        }, [value, delay]);
-      return debouncedValue;
-    }
-
-    const debouncedPokemon = useDebounce(pokemon, 3000);
-
-    const changeHandler = event => {
-        setPokemon(event.target.value);
-    };
-
-    const fetchData = async () => {
-        console.log(pokemon)
+    const fetchData = async (pokemon) => {
         const fetchedData = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon}`);
         const data = await fetchedData.json();
         console.log(data)
@@ -35,19 +14,14 @@ const Browser = (() => {
         setPokemonData(data);
     }
 
-    useEffect(() => {
-      if (debouncedPokemon) {
-        fetchData();
-      }
-    }, [debouncedPokemon]
-  );
+    const optimizedFn = debounce(fetchData, 500);
 
     return (
         <>
             <input 
                 type="text"
                 placeholder="Type a pokemon..."
-                onChange={changeHandler}
+                onChange={e => optimizedFn(e.target.value)}
             />
 
             {/* add pokemon card component*/}

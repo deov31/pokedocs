@@ -1,6 +1,6 @@
 const Header = (() => {
     return (
-        <p>The Pokedocs</p>
+        <img src='/images/pokedocs.png' alt="pokedocs" />
     )
 });
 
